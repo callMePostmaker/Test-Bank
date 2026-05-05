@@ -17,11 +17,11 @@ class TestCreateUser:
         response = api_manager.admin_steps.create_user(create_user_request)
 
 
-        assert create_user_request.username == response.username
+        assert create_user_request.username == response.username, 'username в запросе не совпадает с username в ответе'
         assert create_user_request.role == response.role
 
-        # user_from_db = User.get_user_by_username(db_session, create_user_request.username)
-        # assert user_from_db.username == create_user_request.username
+        user_from_db = User.get_user_by_username(db_session, create_user_request.username)
+        assert user_from_db.username == create_user_request.username
 
 
     @pytest.mark.parametrize(
@@ -38,9 +38,12 @@ class TestCreateUser:
             ('Max1128', 'Passw0rdd')
         ]
     )
-    def test_create_user_invalid(self, username, password, api_manager):
+    def test_create_user_invalid(self, db_session: Session, username, password, api_manager):
         create_user_request = CreateUserRequest(username=username, password=password, role="ROLE_USER")
         api_manager.admin_steps.create_invalid_user(create_user_request)
+
+        user_from_db = User.get_user_by_username(db_session, create_user_request.username)
+        assert user_from_db is None, 'Пользователь был создан, ошибка'
 
 
 

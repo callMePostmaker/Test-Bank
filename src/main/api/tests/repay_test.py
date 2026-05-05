@@ -5,8 +5,17 @@ from src.main.api.models.user_credit_repay_request import UserCreditRepayRequest
 
 
 class TestRepay:
-    def test_repay(self, api_manager, create_creditor_request: CreateCreditorRequest, create_creditor_account_user_id, create_credit_id):
+    def test_credit_repay(self, api_manager, create_creditor_request: CreateCreditorRequest, create_creditor_account_user_id, create_credit_id):
         repay_credit_request = UserCreditRepayRequest(creditId=create_credit_id, accountId=create_creditor_account_user_id, amount=5000)
         response = api_manager.user_steps.credit_repay(create_creditor_request, repay_credit_request)
 
         assert response.amountDeposited == repay_credit_request.amount
+
+    def test_invalid_credit_repay(self, api_manager, create_user_request: CreateUserRequest, create_creditor_account_user_id, create_credit_id):
+        repay_credit_request = UserCreditRepayRequest(
+            creditId=create_credit_id + 1,
+            accountId=create_creditor_account_user_id,
+            amount=5000
+        )
+        response = api_manager.user_steps.invalid_credit_repay(create_user_request, repay_credit_request)
+

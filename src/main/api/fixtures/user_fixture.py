@@ -58,8 +58,9 @@ def credit_account_request(create_creditor_account_user_id):
 @pytest.fixture
 def create_credit_id(api_manager, create_creditor_request, credit_account_request):
     create_credit_response = api_manager.user_steps.credit_request(create_creditor_request, credit_account_request)
-
     return create_credit_response.creditId
+
+
 
 
 

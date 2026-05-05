@@ -9,3 +9,10 @@ class TestDeposit:
         response = api_manager.user_steps.deposit_account(create_user_request, deposit_account_request)
 
         assert response.balance == deposit_account_request.amount
+
+
+    def test_unauthorized_deposit(self, api_manager, create_user_request: CreateUserRequest, create_account_user_id):
+        deposit_account_request = UserDepositRequest(accountId=create_account_user_id, amount=randint(100000, 900000)/100)
+        response = api_manager.user_steps.unauthorized_deposit_account(create_user_request, deposit_account_request)
+
+

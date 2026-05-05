@@ -22,7 +22,26 @@ class ResponseSpecs:
             assert response.status_code == HTTPStatus.BAD_REQUEST, response.text
         return confirm
 
-    def unprocessable_entity():
+    @staticmethod
+    def request_unprocessable_entity():
         def confirm(response: Response):
             assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY, response.text
+        return confirm
+
+    @staticmethod
+    def request_not_found():
+        def confirm(response: Response):
+            assert response.status_code == HTTPStatus.NOT_FOUND, response.text
+        return confirm
+
+    @staticmethod
+    def request_forbidden():
+        def confirm(response: Response):
+            assert response.status_code == HTTPStatus.FORBIDDEN, response.text
+        return confirm
+
+    @staticmethod
+    def request_unauthorized():
+        def confirm(response: Response):
+            assert response.status_code == HTTPStatus.UNAUTHORIZED, response.text
         return confirm
