@@ -1,136 +1,98 @@
-from asyncio import timeout
-from itertools import product
-
 from playwright.sync_api import expect
+from src.main.ui.pages.catalog_page import CatalogPage
 
-def test_count_catalog(auth_page):
-    products = auth_page.locator('.inventory_item')
-
-    assert products.count() == 6
-
-
-def test_sort_catalog_az(auth_page):
-    sort_selector = auth_page.locator('.product_sort_container')
-    expect(sort_selector).to_be_visible(timeout=5000)
-
-    sort_selector.select_option('az')
-
-    names = auth_page.locator('.inventory_item').all_text_contents()
-
-    assert names == sorted(names), 'Товары не были отсортированы по "az" фильтру'
+def test_count_catalog(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user','secret_sauce')
+    assert catalog.get_products_count() == 6
 
 
-def test_sort_catalog_za(auth_page):
-    sort_selector = auth_page.locator('.product_sort_container')
-    expect(sort_selector).to_be_visible(timeout=5000)
-
-    sort_selector.select_option('za')
-
-    names = auth_page.locator('.inventory_item').all_text_contents()
-
-    assert names == sorted(names, reverse=True), 'Товары не были отсортированы по "za" фильтру'
+def test_sort_catalog_az(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    catalog.sort_items('az')
+    names = sorted(catalog.get_product_names())
+    assert names == catalog.get_product_names(), 'Товары не были отсортированы по "az" фильтру'
 
 
-def test_sort_catalog_by_price(auth_page):
-    sort_selector = auth_page.locator('.product_sort_container')
-    expect(sort_selector).to_be_visible(timeout=5000)
-
-    sort_selector.select_option('lohi')
-
-    prices_text = auth_page.locator('.inventory_item_price').all_text_contents()
-
-    prices = [float(p.replace('$', "")) for p in prices_text]
-
-    assert prices ==sorted(prices), 'товары не были отсортированы по убыванию цены'
-
-    sort_selector.select_option('hilo')
-
-    prices_text = auth_page.locator('.inventory_item_price').all_text_contents()
-
-    prices = [float(p.replace('$', "")) for p in prices_text]
-
-    assert prices == sorted(prices, reverse=True), 'товары не были отсортированы по возрастанию цены'
+def test_sort_catalog_za(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    catalog.sort_items('za')
+    names = sorted(catalog.get_product_names(), reverse=True)
+    assert names == catalog.get_product_names(), 'Товары не были отсортированы по "za" фильтру'
 
 
-def test_add_to_cart(auth_page):
-    product_card = auth_page.locator('.inventory_item', has_text='Sauce Labs Bike Light')
-    add_button = product_card.locator('button')
-
-    add_button.click()
-
-    expect(add_button).to_have_text('Remove')
-
-    expect(auth_page.locator('.shopping_cart_badge')).to_have_text('1')
-
-
-def test_add_sauce_labs_onesie_to_cart(auth_page):
-    product_card = auth_page.locator('.inventory_item', has_text='Sauce Labs Onesie')
-    add_button = product_card.locator('button')
-
-    add_button.click()
-
-    expect(add_button).to_have_text('Remove')
-    cart_bage = auth_page.locator('.shopping_cart_badge')
-    expect(cart_bage).to_have_text('1')
-
-    add_button.click()
-
-    expect(add_button).to_have_text('Add to cart')
-    expect(cart_bage).not_to_be_visible()
+def test_sort_catalog_by_price(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    #сорт от меньшего к большему
+    catalog.sort_items('lohi')
+    sorted_prices = sorted(catalog.get_product_prices())
+    assert sorted_prices == catalog.get_product_prices(), 'товары не были отсортированы по убыванию цены'
+    # сорт от большего к меньшему
+    catalog.sort_items('hilo')
+    reverse_sorted_prices = sorted(catalog.get_product_prices(), reverse=True)
+    assert reverse_sorted_prices == catalog.get_product_prices(), 'товары не были отсортированы по возрастанию цены'
 
 
-def test_product_details_onesie(auth_page):
-    product_card = auth_page.locator('.inventory_item', has_text='Sauce Labs Onesie')
+def test_add_to_cart(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
 
-    product_name = product_card.locator('[data-test="inventory-item-name"]').inner_text()
-    product_price = product_card.locator('[data-test="inventory-item-price"]').inner_text()
-
-    product_card.locator('[data-test="inventory-item-name"]').click()
-
-    detail_name = auth_page.locator('[data-test="inventory-item-name"]').inner_text()
-    detail_price = auth_page.locator('[data-test="inventory-item-price"]').inner_text()
-
-    assert product_name == detail_name, 'Названия товара не совпадают'
-    assert product_price == detail_price, "Цены товара не совпадают"
+    expect(catalog.add_to_cart('Sauce Labs Bike Light')).to_have_text('Remove')
+    assert catalog.get_cart_count() == 1
 
 
-def test_product_details_jacket(auth_page):
-    product_card = auth_page.locator('.inventory_item', has_text='Sauce Labs Fleece Jacket')
-
-    product_name = product_card.locator('[data-test="inventory-item-name"]').inner_text()
-    product_price = product_card.locator('[data-test="inventory-item-price"]').inner_text()
-
-    product_card.locator('[data-test="inventory-item-name"]').click()
-
-    detail_name = auth_page.locator('[data-test="inventory-item-name"]').inner_text()
-    detail_price = auth_page.locator('[data-test="inventory-item-price"]').inner_text()
-
-    assert product_name == detail_name, 'Названия товара не совпадают'
-    assert product_price == detail_price, "Цены товара не совпадают"
+def test_add_sauce_labs_onesie_to_cart(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    # Добавляем товар Sauce Labs Onesie в корзину
+    expect(catalog.add_to_cart('Sauce Labs Onesie')).to_have_text('Remove')
+    assert catalog.get_cart_count() == 1
+    # Удаляем товар Sauce Labs Onesie из корзины
+    expect(catalog.remove_from_cart('Sauce Labs Onesie')).to_have_text('Add to cart')
+    assert catalog.get_cart_count() == 0
 
 
-def test_remove_item_from_catalog(auth_page):
-    product_card = auth_page.locator('.inventory_item', has_text='Test.allTheThings() T-Shirt (Red)')
-    product_button = product_card.locator('[data-test="add-to-cart-test.allthethings()-t-shirt-(red)"]')
-    product_button.click()
+def test_product_details_onesie(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    name, price, detail_name, detail_price = catalog.open_product_details('Sauce Labs Onesie')
 
-    remove_button = product_card.locator('[data-test="remove-test.allthethings()-t-shirt-(red)"]')
-    assert remove_button.is_visible(), "кнопка удаления товара из корзины не появилась"
-
-    remove_button.click()
-    assert product_button.is_visible(), 'Кнопка добавить в корзиру не появилась после удаления товара из корзины'
+    assert name == detail_name, 'Названия товара не совпадают'
+    assert price == detail_price, "Цены товара не совпадают"
 
 
-def test_remove_sauce_lab_onesie(auth_page):
-    product_card = auth_page.locator('.inventory_item', has_text='Sauce Labs Onesie')
-    product_button = product_card.locator('[data-test="add-to-cart-sauce-labs-onesie"]')
-    product_button.click()
+def test_product_details_jacket(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    name, price, detail_name, detail_price = catalog.open_product_details('Sauce Labs Fleece Jacket')
 
-    remove_button = product_card.locator('[data-test="remove-sauce-labs-onesie"]')
-    assert remove_button.is_visible(), "кнопка удаления товара из корзины не появилась"
+    assert name == detail_name, 'Названия товара не совпадают'
+    assert price == detail_price, "Цены товара не совпадают"
 
-    remove_button.click()
-    assert product_button.is_visible(), 'Кнопка добавить в корзиру не появилась после удаления товара из корзины'
 
+def test_remove_item_from_catalog(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    # Добавляем товар в корзину
+    expect(catalog.add_to_cart('Test.allTheThings() T-Shirt (Red)')).to_have_text('Remove')
+    assert catalog.get_cart_count() == 1
+    # Удаляем товар из корзины
+    expect(catalog.remove_from_cart('Test.allTheThings() T-Shirt (Red)')).to_have_text('Add to cart')
+    assert catalog.get_cart_count() == 0
+
+
+
+def test_remove_sauce_lab_onesie(page):
+    catalog = CatalogPage(page)
+    catalog.login('standard_user', 'secret_sauce')
+    # Добавляем товар Sauce Labs Onesie в корзину
+    expect(catalog.add_to_cart('Sauce Labs Onesie')).to_have_text('Remove')
+    assert catalog.get_cart_count() == 1
+    # Удаляем товар Sauce Labs Onesie из корзины
+    expect(catalog.remove_from_cart('Test.allTheThings() T-Shirt (Red)')).to_have_text('Add to cart')
+    assert catalog.get_cart_count() == 0
 
 

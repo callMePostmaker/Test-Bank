@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 class LoginPage:
-    URL = 'https://www.saucedemo.com'
+    URL = 'https://www.saucedemo.com/'
 
     def __init__(self, page: Page):
         self.page = page
@@ -14,12 +14,12 @@ class LoginPage:
         self.page.goto(self.URL)
 
     def login(self, username: str, password: str):
-        self.password_input.fill(username)
-        self.username_input.fill(password)
+        self.username_input.fill(username)
+        self.password_input.fill(password)
         self.login_button.click()
 
-    def get_error_text(self):
-        return self.error_message.inner_text()
+    def get_error_text(self) -> str:
+        return self.error_message.inner_text()  
     
 
 
