@@ -64,7 +64,8 @@ class CatalogPage:
 
     def get_cart_count(self) -> int:
         if self.cart_badge.is_visible():
-            return int(self.cart_badge.inner_text())
+            if self.cart_badge.inner_text():
+                return int(self.cart_badge.inner_text())
         return 0
 
     def open_product_details(self, product_name: str):
