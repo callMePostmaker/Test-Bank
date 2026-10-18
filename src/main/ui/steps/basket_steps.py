@@ -13,6 +13,12 @@ class BasketSteps:
         self.basket.open_cart()
         return self
 
+    @allure.step('Ожидаем полной загрузки страницы')
+    def wait_for_loaded_state(self, state: str = 'load', timeout: int = 30_000):
+        self.page.wait_for_load_state(state=state, timeout=timeout)
+        self.page.wait_for_selector('.inventory_item')
+        return self
+
     @allure.step('Проверяем что товар {product_name} добавлен в коризину')
     def check_product_in_basket(self, product_name: str):
         self.basket.expect_item_in_cart(product_name)

@@ -100,6 +100,8 @@ def test_checkout_without_field(page):
     catalog_steps.add_to_cart('Sauce Labs Bike Light')
 
     basket_steps.open_cart()
+    basket_steps.wait_for_loaded_state()
+
     assert 'Sauce Labs Bike Light' in basket_steps.get_items_names()
 
     basket_steps.open_checkout()
