@@ -1,11 +1,12 @@
 from playwright.sync_api import expect
-from ui.pages.catalog_page import CatalogPage
-from ui.steps.catalog_steps import CatalogSteps
+from src.main.ui.pages.catalog_page import CatalogPage
+from src.main.ui.steps.catalog_steps import CatalogSteps
 
 
 def test_count_catalog(page):
     steps = CatalogSteps(page)
     steps.login('standard_user', 'secret_sauce')
+    steps.wait_for_loaded_state()
     assert steps.get_products_count() > 0
 
 

@@ -1,9 +1,7 @@
 from random import randint
 import pytest
-
 from src.main.api.models.create_creditor_request import CreateCreditorRequest
 from src.main.api.models.create_user_request import CreateUserRequest
-from src.main.api.classes.api_manager import ApiManager
 from src.main.api.generators.model_generator import RandomModelGenerator
 from src.main.api.models.user_credit_request import UserCreditRequest
 from src.main.api.models.user_deposit_request import UserDepositRequest

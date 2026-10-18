@@ -3,3 +3,6 @@ requests==2.34.2
 pydantic==2.13.4
 allure-pytest==2.16.0
 rstr==3.2.2
+sqlalchemy==2.0.51
+playwright==1.64.0
+psycopg2-binary==2.9.13

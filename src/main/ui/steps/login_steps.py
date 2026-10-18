@@ -1,5 +1,5 @@
 import allure
-from ui.pages.login_page import LoginPage
+from src.main.ui.pages.login_page import LoginPage
 from playwright.sync_api import Page
 
 

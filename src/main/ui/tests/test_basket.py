@@ -1,8 +1,8 @@
 import pytest
 
-from ui.steps.catalog_steps import CatalogSteps
-from ui.steps.basket_steps import BasketSteps
-from ui.steps.checkout_steps import CheckoutSteps
+from src.main.ui.steps.catalog_steps import CatalogSteps
+from src.main.ui.steps.basket_steps import BasketSteps
+from src.main.ui.steps.checkout_steps import CheckoutSteps
 
 
 def test_item_and_check_in_cart(page):

@@ -1,5 +1,5 @@
 import allure
-from ui.pages.basket_page import BasketPage
+from src.main.ui.pages.basket_page import BasketPage
 from playwright.sync_api import Page, expect
 
 

@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 class CatalogPage:
-    URL = 'https://www.saucedemo.com/'
+    URL = 'https://www.saucedemo.com/inventory.html'
 
     def __init__(self, page: Page):
         self.page = page

@@ -18,7 +18,7 @@ class TestCreateUser:
 
 
         assert create_user_request.username == response.username, 'username в запросе не совпадает с username в ответе'
-        assert create_user_request.role == response.role
+        assert create_user_request.role == response.role, 'role в ответе не совпадает с role в запросе'
 
         user_from_db = User.get_user_by_username(db_session, create_user_request.username)
         assert user_from_db.username == create_user_request.username

@@ -1,5 +1,6 @@
+import time
 import allure
-from ui.pages.catalog_page import CatalogPage
+from src.main.ui.pages.catalog_page import CatalogPage
 from playwright.sync_api import Page, expect
 
 
@@ -11,6 +12,12 @@ class CatalogSteps:
     @allure.step('Логинимся пользователем {username}')
     def login(self, username: str, password: str):
         self.catalog_page.login(username, password)
+        return self
+
+    @allure.step('Ожидаем полной загрузки страницы')
+    def wait_for_loaded_state(self, state: str='load', timeout: int= 30_000):
+        self.page.wait_for_load_state(state=state, timeout=timeout)
+        self.page.wait_for_selector('.inventory_item')
         return self
 
     @allure.step('Добавление товара {product_name} в корзину')

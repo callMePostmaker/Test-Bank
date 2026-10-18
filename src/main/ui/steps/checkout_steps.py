@@ -1,5 +1,5 @@
 import allure
-from ui.pages.checkout_page import CheckoutPage
+from src.main.ui.pages.checkout_page import CheckoutPage
 from playwright.sync_api import Page, expect
 
 

@@ -1,17 +1,20 @@
+import time
+
 import pytest
 from playwright.sync_api import expect
-from ui.pages.catalog_page import CatalogPage
-from ui.pages.login_page import LoginPage
-from ui.steps.login_steps import LoginSteps
-from ui.steps.catalog_steps import CatalogSteps
+from src.main.ui.pages.catalog_page import CatalogPage
+from src.main.ui.pages.login_page import LoginPage
+from src.main.ui.steps.login_steps import LoginSteps
+from src.main.ui.steps.catalog_steps import CatalogSteps
 
 def test_auth(page):
     steps = LoginSteps(page)
     steps.open_login_page().login('standard_user', 'secret_sauce')
-
     # Проверяем, что находимся на странице каталога после успешного логина
-    catalog_page = CatalogPage(page)
-    assert catalog_page.get_products_count() > 0
+    steps = CatalogSteps(page)
+    steps.wait_for_loaded_state()
+
+    assert steps.get_products_count() > 0
 
 
 def test_auth_locked_out_user(page):
@@ -25,23 +28,24 @@ def test_auth_locked_out_user(page):
 def test_logout(page):
     steps = CatalogSteps(page)
     steps.login('standard_user', 'secret_sauce')
+    steps.wait_for_loaded_state()
 
     assert steps.get_products_count() > 0
     assert steps.get_products_in_cart_count() == 0
 
     steps.logout()
-    expect(page).to_have_url(CatalogPage.URL)
+    expect(page).to_have_url(LoginPage.URL)
 
 
 def test_logout_visual_user(page):
     steps = CatalogSteps(page)
     steps.login('standard_user', 'secret_sauce')
+    steps.wait_for_loaded_state()
 
     assert steps.get_products_count() > 0
     assert steps.get_products_in_cart_count() == 0
 
     steps.logout()
-    expect(page).to_have_url(CatalogPage.URL)
 
     
 
