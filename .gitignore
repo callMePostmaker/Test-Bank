@@ -4,3 +4,7 @@ __pycache__/
 .idea/
 .env
 allure-results/
+# meeting_scribe: конфиг с устройствами/секретной ICS-ссылкой и записи созвонов
+scribe.toml
+recordings/
+.scribe_state.json

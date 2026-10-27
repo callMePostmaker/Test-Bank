@@ -1,0 +1,44 @@
+# Конфиг агента-стенографиста. Скопируйте в scribe.toml рядом с местом запуска
+# (или в ~/.config/meeting_scribe/config.toml) и заполните.
+# Секреты сюда НЕ писать: NOTION_TOKEN и OPENAI_API_KEY задаются переменными окружения.
+
+# Куда публиковать готовую стенограмму (локальные файлы пишутся всегда):
+# пусто / ["notion"] / ["google_docs"] / ["notion", "google_docs"]
+publish = ["notion"]
+
+[record]
+# Имена/индексы устройств: python -m meeting_scribe devices
+# Windows пример: mic_device = "Microphone (Realtek...)", system_device = "Stereo Mix (Realtek...)"
+# macOS пример:   mic_device = "0",  system_device = "2"   (индекс BlackHole 2ch)
+# Linux пример:   mic_device = "alsa_input.usb-....", system_device = "alsa_output....monitor"
+mic_device = ""
+system_device = ""
+output_dir = "recordings"
+keep_audio = true
+
+[transcribe]
+engine = "faster-whisper"   # faster-whisper (локально) | openai (облако)
+model = "small"              # tiny < base < small < medium < large-v3 (качество/скорость)
+language = ""                # "" = автоопределение; можно зафиксировать "ru"
+device = "auto"              # auto | cpu | cuda
+compute_type = "default"
+beam_size = 5
+vad_filter = true            # пропускать тишину
+
+[notion]
+# Ровно одно из двух. Как получить: см. README, раздел «Notion».
+parent_page_id = ""          # создавать страницы внутри этой страницы
+database_id = ""             # ...или строки в этой базе данных
+title_property = "Name"      # имя title-колонки базы (если используете database_id)
+
+[google_docs]
+credentials_json = ""        # путь к JSON-ключу сервисного аккаунта
+folder_id = ""               # папка Drive (необязательно)
+share_with_email = ""        # ваш e-mail: документы сервисного аккаунта расшарятся вам
+
+[calendar]
+ics_source = ""              # URL .ics-фида или путь к .ics-файлу (для режима watch)
+poll_seconds = 60
+grace_seconds = 120          # продолжать запись N секунд после конца события
+record_all = false           # false: писать только события-созвоны (по ключевым словам ниже)
+keywords = ["meet.google", "zoom.", "teams.microsoft", "telemost", "webex", "созвон", "видеовстреч"]

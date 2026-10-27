@@ -1,0 +1,8 @@
+# Зависимости агента-стенографиста (отдельно от банковских тестов).
+#   pip install -r meeting_scribe/requirements.txt
+faster-whisper>=1.1.0
+requests>=2.32
+tzdata>=2024.1; sys_platform == "win32"
+# Опционально, для публикации в Google Docs (раскомментируйте при необходимости):
+# google-api-python-client>=2.140
+# google-auth>=2.35
