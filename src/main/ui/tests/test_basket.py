@@ -53,6 +53,7 @@ def test_remove_two_items_from_cart(page):
     catalog_steps.add_to_cart('Test.allTheThings() T-Shirt (Red)')
 
     basket_steps.open_cart()
+    basket_steps.wait_for_loaded_state()
 
     items_list = basket_steps.get_items_names()
     assert 'Sauce Labs Backpack' in items_list
