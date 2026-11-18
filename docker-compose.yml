@@ -3,6 +3,9 @@ services:
     image: clausmerderet/bank_api:latest
     ports:
       - '4111:4111'
+      # Postgres живёт внутри backend-контейнера на 5432. Если тесты (db_session) запускаются
+      # с хоста, порт нужно опубликовать — раскомментируй строку ниже:
+      # - '5432:5432'
     networks:
       - bank-network
 
