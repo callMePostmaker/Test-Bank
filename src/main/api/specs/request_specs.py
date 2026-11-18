@@ -17,7 +17,7 @@ class RequestSpecs:
     def auth_headers(username: str, password: str):
         request = LoginUserRequest(username=username, password=password)
         response = requests.post(
-            url=f'{Config.fetch('backendUrl')}/auth/token/login',
+            url=f'{Config.fetch("backendUrl")}/auth/token/login',
             json=request.model_dump(),
             headers=RequestSpecs.base_headers()
         )
